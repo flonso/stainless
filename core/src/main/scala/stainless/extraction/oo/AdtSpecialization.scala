@@ -13,6 +13,8 @@ trait AdtSpecialization extends inox.ast.SymbolTransformer { self =>
   def transform(symbols: s.Symbols): t.Symbols = {
     import s._
 
+    checkSymbolsIn(symbols)
+
     val children: Map[Identifier, Set[Identifier]] =
       symbols.classes.values
         .flatMap(cd => cd.parents.map(_ -> cd))
@@ -185,6 +187,10 @@ trait AdtSpecialization extends inox.ast.SymbolTransformer { self =>
       .filterNot(cd => candidates(cd.id))
       .map(transformer.transform).toSeq
 
-    t.NoSymbols.withFunctions(functions).withADTs(sorts ++ cons).withClasses(classes)
+    val res = t.NoSymbols.withFunctions(functions).withADTs(sorts ++ cons).withClasses(classes)
+
+    checkSymbolsOut(res)
+
+    res
   }
 }

@@ -11,6 +11,8 @@ trait MethodLifting extends inox.ast.SymbolTransformer { self =>
   def transform(symbols: s.Symbols): t.Symbols = {
     import s._
 
+    checkSymbolsIn(symbols)
+
     val children: Map[Identifier, Set[Identifier]] =
       symbols.classes.values
         .flatMap(cd => cd.parents.map(_ -> cd))
@@ -206,6 +208,10 @@ trait MethodLifting extends inox.ast.SymbolTransformer { self =>
     val classes: Seq[t.ClassDef] = newSymbols.classes.values
       .map(cd => default.transform(cd)).toSeq
 
-    t.NoSymbols.withFunctions(functions).withClasses(classes)
+    val res = t.NoSymbols.withFunctions(functions).withClasses(classes)
+
+    checkSymbolsOut(res)
+
+    res
   }
 }

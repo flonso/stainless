@@ -17,5 +17,6 @@ package object innerfuns {
   object extractor extends FunctionClosure {
     val s: trees.type = trees
     val t: inlining.trees.type = inlining.trees
+    val name = "FunctionClosure"
   }
 }

@@ -14,6 +14,8 @@ trait ImperativeCodeElimination extends inox.ast.SymbolTransformer {
     import syms._
     import exprOps._
 
+    checkSymbolsIn(syms)
+
     /* varsInScope refers to variable declared in the same level scope.
      * Typically, when entering a nested function body, the scope should be
      * reset to empty */
@@ -390,6 +392,10 @@ trait ImperativeCodeElimination extends inox.ast.SymbolTransformer {
       }
     }
 
-    NoSymbols.withFunctions(newFds.toSeq).withADTs(syms.adts.values.toSeq)
+    val res = NoSymbols.withFunctions(newFds.toSeq).withADTs(syms.adts.values.toSeq)
+
+    checkSymbolsOut(res)
+
+    res
   }
 }

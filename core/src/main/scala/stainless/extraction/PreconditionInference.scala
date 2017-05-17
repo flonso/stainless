@@ -16,6 +16,8 @@ trait PreconditionInference extends inox.ast.SymbolTransformer { self =>
     import syms._
     import exprOps._
 
+    checkSymbolsIn(syms)
+
     object FlatApplication {
       def unapply(app: Application): Option[(Expr, Seq[Expr])] = app match {
         case Application(app: Application, args) => unapply(app).map(p => p._1 -> (p._2 ++ args))
@@ -405,6 +407,8 @@ trait PreconditionInference extends inox.ast.SymbolTransformer { self =>
       }
     }
 
+    checkSymbolsOut(adtSyms, Some("ADT"))
+
     val preSyms = NoSymbols
       .withADTs(adtSyms.adts.values.toSeq)
       .withFunctions(for (fd <- adtSyms.functions.values.toSeq) yield {
@@ -434,6 +438,9 @@ trait PreconditionInference extends inox.ast.SymbolTransformer { self =>
         }
       })
 
+    checkSymbolsOut(preSyms, Some("PRE"))
+
+
     val finalSyms = NoSymbols
       .withADTs(preSyms.adts.values.toSeq)
       .withFunctions(for (fd <- preSyms.functions.values.toSeq) yield {
@@ -447,6 +454,8 @@ trait PreconditionInference extends inox.ast.SymbolTransformer { self =>
 
         fd.copy(fullBody = injectRequires(fd.fullBody))
       })
+
+    checkSymbolsOut(finalSyms)
 
     finalSyms
   }

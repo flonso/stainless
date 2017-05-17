@@ -12,6 +12,8 @@ trait FunctionClosure extends inox.ast.SymbolTransformer { self =>
     import s._
     import symbols._
 
+    checkSymbolsIn(symbols)
+
     // Represents a substitution to a new function, along with parameter and type parameter
     // mappings
     case class FunSubst(
@@ -199,8 +201,12 @@ trait FunctionClosure extends inox.ast.SymbolTransformer { self =>
       val t: self.t.type = self.t
     }
 
-    t.NoSymbols
+    val res = t.NoSymbols
       .withFunctions(symbols.functions.values.toSeq.flatMap(close))
       .withADTs(symbols.adts.values.toSeq.map(identity.transform))
+
+    checkSymbolsOut(res)
+
+    res
   }
 }

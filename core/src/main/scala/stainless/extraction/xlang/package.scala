@@ -20,6 +20,7 @@ package object xlang {
   object extractor extends oo.SimpleSymbolTransformer {
     val s: trees.type = trees
     val t: oo.trees.type = oo.trees
+    val name = "xlang"
 
     object transformer extends ast.TreeTransformer {
       val s: trees.type = trees

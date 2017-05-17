@@ -15,6 +15,8 @@ trait TypeEncoding extends inox.ast.SymbolTransformer { self =>
     import t.{forall => _, _}
     import t.dsl._
 
+    checkSymbolsIn(symbols)
+
     def encodeName(s: String): String = s.replace("[", "<").replace("]", ">")
 
     /* Identifier for the base `Type` sort */
@@ -1099,6 +1101,8 @@ trait TypeEncoding extends inox.ast.SymbolTransformer { self =>
         println(finalSymbols.explainTyping(fd.fullBody)(PrinterOptions()))
       }
     }
+
+    checkSymbolsOut(finalSymbols)
 
     finalSymbols
   }

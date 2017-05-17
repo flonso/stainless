@@ -92,6 +92,7 @@ trait ProcessingPipeline extends TerminationChecker with inox.utils.Interruptibl
   private object withoutPosts extends inox.ast.SimpleSymbolTransformer {
     val s: trees.type = trees
     val t: trees.type = trees
+    val name = "withoutPosts"
 
     protected def transformFunction(fd: FunDef): FunDef = {
       // When using the loop processor, it helps to ignore postconditions in the

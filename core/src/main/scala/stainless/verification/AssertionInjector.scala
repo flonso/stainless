@@ -80,6 +80,7 @@ object AssertionInjector {
   } = new inox.ast.SymbolTransformer {
     val s: p.trees.type = p.trees
     val t: p.trees.type = p.trees
+    val name = "AssertionInjector"
 
     def transform(syms: s.Symbols): t.Symbols = {
       object injector extends AssertionInjector {

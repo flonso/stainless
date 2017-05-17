@@ -13,12 +13,14 @@ trait FunctionInlining extends inox.ast.SymbolTransformer { self =>
     import symbols._
     import CallGraphOrderings._
 
+    checkSymbolsIn(symbols)
+
     object transformer extends ast.TreeTransformer {
       val s: self.s.type = self.s
       val t: self.t.type = self.t
     }
 
-    t.NoSymbols
+    val res = t.NoSymbols
       .withADTs(symbols.adts.values.map(transformer.transform).toSeq)
       .withFunctions(symbols.functions.values.toSeq.sorted(functionOrdering).flatMap { fd =>
         if ((fd.flags contains Inline) && transitivelyCalls(fd, fd)) {
@@ -53,5 +55,9 @@ trait FunctionInlining extends inox.ast.SymbolTransformer { self =>
           )))
         }
       })
+
+    checkSymbolsOut(res)
+
+    res
   }
 }

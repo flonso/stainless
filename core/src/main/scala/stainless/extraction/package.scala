@@ -61,6 +61,7 @@ package object extraction {
 
   object preconditionInference extends {
     val trees: extraction.trees.type = extraction.trees
+    val name = "PreconditionInference"
   } with PreconditionInference
 
   val extractor: inox.ast.SymbolTransformer {

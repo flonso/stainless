@@ -14,6 +14,8 @@ trait AntiAliasing extends inox.ast.SymbolTransformer with EffectsChecking { sel
 
   def transform(syms: Symbols): Symbols = {
 
+    checkSymbolsIn(syms)
+
     object transformer extends SelfTreeTransformer {
       import syms._
 
@@ -64,7 +66,7 @@ trait AntiAliasing extends inox.ast.SymbolTransformer with EffectsChecking { sel
       }
     }
 
-    val newSyms = syms.transform(transformer)
+    val newSyms = syms.transform(transformer, "inner antialiasing")
     import newSyms._
 
     object effects extends {
@@ -432,6 +434,8 @@ trait AntiAliasing extends inox.ast.SymbolTransformer with EffectsChecking { sel
       .withFunctions(for (fd <- newSyms.functions.values.toSeq) yield {
         updateFunction(Outer(fd), Environment.empty).toFun
       })
+
+    checkSymbolsOut(finalSyms)
 
     finalSyms
   }

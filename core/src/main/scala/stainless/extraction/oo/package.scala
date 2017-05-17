@@ -18,16 +18,19 @@ package object oo {
   object methods extends MethodLifting {
     val s: trees.type = trees
     val t: trees.type = trees
+    val name = "MethodLifting"
   }
 
   object adts extends AdtSpecialization {
     val s: trees.type = trees
     val t: trees.type = trees
+    val name = "AdtSpecialization"
   }
 
   object encoding extends TypeEncoding {
     val s: trees.type = trees
     val t: holes.trees.type = holes.trees
+    val name = "TypeEncoding"
   }
 
   val extractor = methods andThen adts andThen encoding

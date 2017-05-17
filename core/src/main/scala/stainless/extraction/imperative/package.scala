@@ -18,15 +18,18 @@ package object imperative {
 
   object antiAliasing extends {
     val trees: imperative.trees.type = imperative.trees
+    val name = "antialiasing"
   } with AntiAliasing
 
   object imperativeElimination extends {
     val trees: imperative.trees.type = imperative.trees
+    val name = "imperativeElimination"
   } with ImperativeCodeElimination
 
   object cleanup extends {
     val s: trees.type = trees
     val t: innerfuns.trees.type = innerfuns.trees
+    val name = "cleanup"
   } with ImperativeCleanup
 
   val extractor = antiAliasing andThen imperativeElimination andThen cleanup

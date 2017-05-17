@@ -21,7 +21,7 @@ object VerificationComponent extends SimpleComponent {
   val lowering = inox.ast.SymbolTransformer(new ast.TreeTransformer {
     val s: extraction.trees.type = extraction.trees
     val t: extraction.trees.type = extraction.trees
-  })
+  }, "lowering")
 
   implicit val debugSection = DebugSectionVerification
 

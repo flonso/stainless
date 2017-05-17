@@ -326,6 +326,7 @@ object SymbolTransformer {
   } = new SimpleSymbolTransformer {
     val s: trans.s.type = trans.s
     val t: trans.t.type = trans.t
+    val name = "Some SymbolTransformer"
 
     protected def transformFunction(fd: s.FunDef): t.FunDef = trans.transform(fd)
     protected def transformADT(adt: s.ADTDefinition): t.ADTDefinition = trans.transform(adt)

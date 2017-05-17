@@ -39,7 +39,7 @@ trait SimpleComponent extends Component { self =>
     val checker = inox.ast.SymbolTransformer(new extraction.CheckingTransformer {
       val s: extraction.trees.type = extraction.trees
       val t: self.trees.type = self.trees
-    })
+    }, name)
 
     val lowering = MainHelpers.components.filterNot(_ == this).foldRight(checker) {
       (l, r) => l.lowering andThen r

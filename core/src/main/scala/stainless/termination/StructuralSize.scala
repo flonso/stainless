@@ -17,6 +17,7 @@ trait StructuralSize {
   checker.registerTransformer(new inox.ast.SymbolTransformer {
     val s: trees.type = trees
     val t: trees.type = trees
+    val name = "StructuralSize"
 
     def transform(s: Symbols): Symbols = s.withFunctions(functions.toSeq)
   })

@@ -18,6 +18,8 @@ trait ImperativeCleanup extends inox.ast.SymbolTransformer { self =>
   def transform(syms: s.Symbols): t.Symbols = {
     implicit val symbols = syms
 
+    checkSymbolsIn(syms)
+
     val checkedSyms: t.Symbols = {
       object checker extends {
         val s: self.s.type = self.s
@@ -69,6 +71,8 @@ trait ImperativeCleanup extends inox.ast.SymbolTransformer { self =>
       .withFunctions(pureUnitSyms.functions.values.toSeq.map { fd =>
         fd.copy(fullBody = pureUnitSyms.simplifyLets(fd.fullBody))
       })
+
+    checkSymbolsOut(simpleSyms)
 
     simpleSyms
   }

@@ -17,5 +17,6 @@ package object inlining {
   object extractor extends FunctionInlining {
     val s: trees.type = trees
     val t: extraction.trees.type = extraction.trees
+    val name = "FunctionInlining"
   }
 }

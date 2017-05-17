@@ -22,5 +22,5 @@ package object holes {
   } = inox.ast.SymbolTransformer(new ast.TreeTransformer {
     val s: trees.type = trees
     val t: imperative.trees.type = imperative.trees
-  })
+  }, "holes")
 }
