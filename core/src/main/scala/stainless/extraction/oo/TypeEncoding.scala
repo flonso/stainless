@@ -398,7 +398,7 @@ trait TypeEncoding extends inox.ast.SymbolTransformer { self =>
           )
         ).foldRight(subtypeOf(tp1, tp2): Expr) {
           case ((cond, thenn), elze) => IfExpr(cond, thenn, elze)
-        })
+        }).copiedFrom(e)
       }))
 
 
@@ -851,7 +851,7 @@ trait TypeEncoding extends inox.ast.SymbolTransformer { self =>
             tparams map (appScope.transform(_).asInstanceOf[t.TypeParameter]),
             tps map transform,
             args map transform
-          )
+          ).copiedFrom(e)
 
         case s.MatchExpr(scrut, cases) =>
           t.MatchExpr(transform(scrut), for (cse <- cases) yield {
@@ -861,14 +861,14 @@ trait TypeEncoding extends inox.ast.SymbolTransformer { self =>
               case cond => Some(cond)
             }
             t.MatchCase(newPattern, guard, transform(cse.rhs))
-          })
+          }).copiedFrom(e)
 
         case s.LetRec(fds, body) =>
           val funs = fds.map(fd => s.Inner(fd))
           val newScope = scope withFunctions funs
           val newFuns = funs.map(fun => transformFunction(fun)(newScope))
           val newBody = newScope.transform(body)
-          t.LetRec(newFuns.map(_.toLocal), newBody)
+          t.LetRec(newFuns.map(_.toLocal), newBody).copiedFrom(e)
 
         case _ => super.transform(e)
       }
