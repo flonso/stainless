@@ -9,7 +9,7 @@ val osName = if (isWindows) "win" else if (isMac) "mac" else "unix"
 val osArch = System.getProperty("sun.arch.data.model")
 
 val inoxVersion = "1.0.2-81-g9f77744"
-val dottyVersion = "0.1.1-bin-20170429-10a2ce6-NIGHTLY"
+val dottyVersion = "0.1.1-bin-SNAPSHOT"
 
 lazy val nParallel = {
   val p = System.getProperty("parallel")
@@ -47,6 +47,7 @@ lazy val commonSettings: Seq[Setting[_]] = artifactSettings ++ Seq(
     "-deprecation",
     "-unchecked",
     "-feature"
+    //"-language:Scala2" // TODO : Not the right value !
   ),
 
   scalacOptions in (Compile, doc) ++= Seq("-doc-root-content", baseDirectory.value+"/src/main/scala/root-doc.txt"),
@@ -68,9 +69,9 @@ lazy val commonSettings: Seq[Setting[_]] = artifactSettings ++ Seq(
 
   libraryDependencies ++= Seq(
     //"ch.epfl.lamp" %% "dotty" % "0.1-SNAPSHOT",
-    "ch.epfl.lara" %% "inox" % inoxVersion,
-    "ch.epfl.lara" %% "inox" % inoxVersion % "test" classifier "tests",
-    "org.scalatest" %% "scalatest" % "3.0.1" % "test"
+    "ch.epfl.lara" % "inox_2.11" % inoxVersion,
+    "ch.epfl.lara" % "inox_2.11" % inoxVersion % "test" classifier "tests",
+    "org.scalatest" % "scalatest_2.11" % "3.0.1" % "test"
   ),
 
   concurrentRestrictions in Global += Tags.limit(Tags.Test, nParallel),
@@ -86,8 +87,8 @@ lazy val commonSettings: Seq[Setting[_]] = artifactSettings ++ Seq(
 
 lazy val commonFrontendSettings: Seq[Setting[_]] = Seq(
   libraryDependencies ++= Seq(
-    "ch.epfl.lara" %% "inox" % inoxVersion % "it" classifier "tests" classifier "it",
-    "org.scalatest" %% "scalatest" % "3.0.1" % "it"  // FIXME: Does this override `% "test"` from commonSettings above?
+    "ch.epfl.lara" % "inox_2.11" % inoxVersion % "it" classifier "tests" classifier "it",
+    "org.scalatest" % "scalatest_2.11" % "3.0.1" % "it"  // FIXME: Does this override `% "test"` from commonSettings above?
   ),
 
   sourceGenerators in Compile <+= Def.task {
@@ -207,8 +208,10 @@ lazy val `stainless-scalac` = (project in file("frontends/scalac"))
 lazy val `stainless-dotty-frontend` = (project in file("frontends/dotty"))
   .settings(name := "stainless-dotty-frontend")
   .dependsOn(`stainless-core`)
-  .settings(libraryDependencies += "ch.epfl.lamp" % "dotty_2.11" % dottyVersion % "provided")
+  .settings(libraryDependencies += "ch.epfl.lamp" % "dotty_0.1" % dottyVersion % "provided")
   .settings(commonSettings)
+  .settings(projectDependencies ~= (_.map(_.withDottyCompat())))
+  .settings(scalaVersion := dottyVersion)
 
 lazy val `stainless-dotty` = (project in file("frontends/stainless-dotty"))
   .settings(
@@ -216,11 +219,12 @@ lazy val `stainless-dotty` = (project in file("frontends/stainless-dotty"))
     frontendClass := "dotc.DottyCompiler")
   .dependsOn(`stainless-dotty-frontend`)
   // Should truly depend on dotty, overriding the "provided" modifier above:
-  .settings(libraryDependencies += "ch.epfl.lamp" % "dotty_2.11" % dottyVersion)
+  .settings(libraryDependencies += "ch.epfl.lamp" % "dotty_0.1" % dottyVersion)
   .aggregate(`stainless-dotty-frontend`)
   //.dependsOn(inox % "it->test,it")
   .configs(IntegrationTest)
   .settings(commonSettings, commonFrontendSettings, artifactSettings, scriptSettings)
+  .settings(scalaVersion := dottyVersion)
 
 lazy val root = (project in file("."))
   .settings(scalaVersionSetting, sourcesInBase in Compile := false)

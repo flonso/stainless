@@ -68,7 +68,7 @@ class CodeExtraction(inoxCtx: inox.Context, symbols: SymbolsContext)(implicit va
     throw new ImpureCodeEncounteredException(t.pos, msg, Some(t))
   }
 
-  private case class DefContext(
+  case class DefContext(
     tparams: Map[Symbol, xt.TypeParameter] = Map(),
     vars: Map[Symbol, () => xt.Expr] = Map(),
     mutableVars: Map[Symbol, () => xt.Variable] = Map(),
@@ -678,7 +678,7 @@ class CodeExtraction(inoxCtx: inox.Context, symbols: SymbolsContext)(implicit va
     }
   }
 
-  private def extractTree(tr: tpd.Tree)(implicit dctx: DefContext): xt.Expr = (tr match {
+  private def extractTree(tr: tpd.Tree)(implicit dctx: DefContext): xt.Expr = ((tr match {
     case Block(Seq(dd @ DefDef(_, _, Seq(vparams), _, _)), ExUnwrapped(Closure(Nil, call, targetTpt))) if call.symbol == dd.symbol =>
       val vds = vparams map (vd => xt.ValDef(
         FreshIdentifier(vd.symbol.name.toString),
@@ -1163,13 +1163,13 @@ class CodeExtraction(inoxCtx: inox.Context, symbols: SymbolsContext)(implicit va
 
     // default behaviour is to complain :)
     case _ => outOfSubsetError(tr, "Could not extract tree " + tr + " ("+tr.getClass+")")
-  }).setPos(tr.pos)
+  }): xt.Expr).setPos(tr.pos)
 
   private def extractType(t: tpd.Tree)(implicit dctx: DefContext): xt.Type = {
     extractType(t.tpe)(dctx, t.pos)
   }
 
-  private def extractType(tpt: Type)(implicit dctx: DefContext, pos: Position): xt.Type = (tpt match {
+  private def extractType(tpt: Type)(implicit dctx: DefContext, pos: Position): xt.Type = ((tpt match {
     case tpe if tpe.typeSymbol == defn.CharClass    => xt.CharType
     case tpe if tpe.typeSymbol == defn.IntClass     => xt.Int32Type
     case tpe if tpe.typeSymbol == defn.BooleanClass => xt.BooleanType
@@ -1273,5 +1273,5 @@ class CodeExtraction(inoxCtx: inox.Context, symbols: SymbolsContext)(implicit va
       } else {
         outOfSubsetError(NoPosition, "Tree with null-pointer as type found")
       }
-  }).setPos(pos)
+  }): xt.Type).setPos(pos)
 }
