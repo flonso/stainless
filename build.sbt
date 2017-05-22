@@ -9,7 +9,7 @@ val osName = if (isWindows) "win" else if (isMac) "mac" else "unix"
 val osArch = System.getProperty("sun.arch.data.model")
 
 val inoxVersion = "1.0.2-81-g9f77744"
-val dottyVersion = "0.1.1-bin-SNAPSHOT"
+val dottyVersion = "0.1.1-bin-SNAPSHOT-nonbootstrapped"
 
 lazy val nParallel = {
   val p = System.getProperty("parallel")
@@ -208,10 +208,10 @@ lazy val `stainless-scalac` = (project in file("frontends/scalac"))
 lazy val `stainless-dotty-frontend` = (project in file("frontends/dotty"))
   .settings(name := "stainless-dotty-frontend")
   .dependsOn(`stainless-core`)
-  .settings(libraryDependencies += "ch.epfl.lamp" % "dotty_0.1" % dottyVersion % "provided")
+  .settings(libraryDependencies += "ch.epfl.lamp" % "dotty_2.11" % dottyVersion % "provided")
   .settings(commonSettings)
-  .settings(projectDependencies ~= (_.map(_.withDottyCompat())))
-  .settings(scalaVersion := dottyVersion)
+  //.settings(projectDependencies ~= (_.map(_.withDottyCompat())))
+  //.settings(scalaVersion := dottyVersion)
 
 lazy val `stainless-dotty` = (project in file("frontends/stainless-dotty"))
   .settings(
@@ -219,12 +219,12 @@ lazy val `stainless-dotty` = (project in file("frontends/stainless-dotty"))
     frontendClass := "dotc.DottyCompiler")
   .dependsOn(`stainless-dotty-frontend`)
   // Should truly depend on dotty, overriding the "provided" modifier above:
-  .settings(libraryDependencies += "ch.epfl.lamp" % "dotty_0.1" % dottyVersion)
+  .settings(libraryDependencies += "ch.epfl.lamp" % "dotty_2.11" % dottyVersion)
   .aggregate(`stainless-dotty-frontend`)
   //.dependsOn(inox % "it->test,it")
   .configs(IntegrationTest)
   .settings(commonSettings, commonFrontendSettings, artifactSettings, scriptSettings)
-  .settings(scalaVersion := dottyVersion)
+  //.settings(scalaVersion := dottyVersion)
 
 lazy val root = (project in file("."))
   .settings(scalaVersionSetting, sourcesInBase in Compile := false)
