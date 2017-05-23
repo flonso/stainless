@@ -388,7 +388,8 @@ class CodeExtraction(inoxCtx: inox.Context, symbols: SymbolsContext)(implicit va
       xt.exprOps.flattenBlocks(extractTreeOrNoTree(body)(fctx))
     } catch {
       case e: ImpureCodeEncounteredException =>
-        reporter.error(e.pos, e.getMessage)
+        println("FIXME CODEEXTRACTION")
+        reporter.error(e.pos, e.getMessage) // FIXME: Crashes when code is not stainless
         e.printStackTrace()
         //val pos = if (body0.pos == NoPosition) NoPosition else leonPosToScalaPos(body0.pos.source, funDef.getPos)
         /* TODO
