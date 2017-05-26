@@ -13,13 +13,17 @@ import extraction.xlang.{trees => xt}
 
 class DottyCompiler(inoxCtx: inox.Context) extends Compiler {
 
-  val extraction = new StainlessExtraction(inoxCtx)
+  var extraction: StainlessExtraction = _
 
-  override def phases: List[List[Phase]] = List(
-    List(new FrontEnd),
-    List(new PostTyper),
-    List(extraction)
-  )
+  override def phases: List[List[Phase]] = {
+    extraction = new StainlessExtraction(inoxCtx)
+
+    List(
+      List(new FrontEnd),
+      List(new PostTyper),
+      List(extraction)
+    )
+  }
 }
 
 object DottyCompiler {
