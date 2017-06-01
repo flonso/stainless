@@ -15,9 +15,10 @@ class DottyCompiler(inoxCtx: inox.Context) extends Compiler {
 
   var extraction: StainlessExtraction = _
 
+  def getCtx: inox.Context = inoxCtx
+
   override def phases: List[List[Phase]] = {
     extraction = new StainlessExtraction(inoxCtx)
-
     List(
       List(new FrontEnd),
       List(new PostTyper),

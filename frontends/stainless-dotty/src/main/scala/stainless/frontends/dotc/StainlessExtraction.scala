@@ -18,11 +18,12 @@ class StainlessExtraction(inoxCtx: inox.Context) extends Phase {
 
   val symbols = new SymbolsContext
 
-  private val units     = new ListBuffer[xt.UnitDef]
+  private var units: ListBuffer[xt.UnitDef] = new ListBuffer[xt.UnitDef]
   private val classes   = new ListBuffer[xt.ClassDef]
   private val functions = new ListBuffer[xt.FunDef]
 
-  def run(implicit ctx: Context): Unit = {
+  def run(implicit ctx: Context): Unit = {    
+    units = new ListBuffer[xt.UnitDef]
     val extraction = new CodeExtraction(inoxCtx, symbols)
     import extraction.{ctx => _, _}
     import AuxiliaryExtractors._

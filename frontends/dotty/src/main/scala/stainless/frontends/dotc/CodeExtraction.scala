@@ -244,6 +244,7 @@ class CodeExtraction(inoxCtx: inox.Context, symbols: SymbolsContext)(implicit va
     val tpCtx = DefContext((sym.asClass.typeParams zip extparams).toMap)
 
     val parents = template.parents.flatMap(p => p.tpe match {
+      case tpe if tpe.typeSymbol == defn.ProductClass => None
       case tpe if tpe.typeSymbol == defn.ObjectClass => None
       case tpe if defn.isProductClass(tpe.classSymbol) => None
       case tpe => Some(extractType(tpe)(tpCtx, p.pos).asInstanceOf[xt.ClassType])
