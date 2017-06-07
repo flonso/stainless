@@ -17,6 +17,7 @@ trait Component {
 
   trait AbstractReport {
     def emit(): Unit
+    def emitIde(): Seq[List[Object]]
   }
 
   def apply(units: List[xt.UnitDef], program: Program { val trees: xt.type }): Report

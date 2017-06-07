@@ -5,6 +5,7 @@ package verification
 
 import solvers._
 import inox.utils.ASCIIHelpers._
+import stainless.verification.VCStatus.Invalid
 
 object VerificationComponent extends SimpleComponent {
   val name = "verification"
@@ -61,6 +62,21 @@ object VerificationComponent extends SimpleComponent {
       } else {
         ctx.reporter.info("No verification conditions were analyzed.")
       }
+    }
+
+    def emitIde(): Seq[List[Object]] = {
+      def status2List(status: VCStatus[Model]): List[Object] = status match {
+        case Invalid(cex) => 
+          val info = cex.vars map { case (vd, e) => e.toString }
+          List(status.name, info)
+        case status => List(status.name, "")
+      }
+
+      val report = for { (vc, vr) <- vrs } yield {
+        List(vc.fd.name, vc.getPos, vc.kind.name, vr.status)
+      }
+
+      report
     }
   }
 
